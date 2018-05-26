@@ -15,6 +15,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import databaseOperation.DBOper;
+import tableInfo.UserInfo;
 public class LoginFrame extends JFrame {
 	private JLabel userNameLabel;
 	private JLabel passwordLabel;
@@ -22,6 +24,7 @@ public class LoginFrame extends JFrame {
 	private JPasswordField password;
 	private JButton login;
 	private JButton exit;
+	private static UserInfo user;
 	
 	public LoginFrame(){
 		this.setTitle("进销存管理系统--登录");
@@ -56,8 +59,23 @@ public class LoginFrame extends JFrame {
 				
 			}
 		});
+		
+		exit = new JButton();
+		exit.addActionListener(new ActionListener(){
+			public void actionPerformed(final ActionEvent e){
+				user = DBOper.getUser(userName.getText(),String.valueOf(password.getPassword()));
+				if (user.getUsername() == null || user.getName() == null){
+					userName.setText(null);
+					password.setText(null);
+					return;
+				}
+				setVisible(false);
+				new MainFrame();
+				//System.exit(0);
+			}
+		});
 		login.setText("登录");
-		login.setBounds(126, 134, 60, 18);
+		login.setBounds(108, 134, 60, 18);
 		panel.add(login);
 		exit = new JButton();
 		exit.addActionListener(new ActionListener(){
@@ -66,16 +84,25 @@ public class LoginFrame extends JFrame {
 			}
 		});
 		exit.setText("退出");
-		exit.setBounds(196, 134, 60, 18);
+		exit.setBounds(180, 134, 60, 18);
 		panel.add(exit);
 		getContentPane().add(panel);
 		this.setPreferredSize(new Dimension(250, 170));
 		this.setVisible(true);
 		setResizable(false);
-		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 	}
-	public static void main(String[] args) {
+	
+	public static UserInfo getUser(){
+		return user;
+	}
+	
+	public static void setUser(UserInfo user){
+		LoginFrame.user = user;
+	}
+	
+	/*public static void main(String[] args) {
 			JFrame loginFrame =	new LoginFrame();
-	}
+	}*/
 	
 }
